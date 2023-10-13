@@ -437,9 +437,9 @@ yang berisikan syntax berikut
 ````
 # Default menggunakan Round Robin
 upstream arjuna  {
-    	server 10.36.1.3:5011 ; #IP Prabukusuma
-    	server 10.36.1.4:5017 ; #IP Abimanyu
-    	server 10.36.1.2:5009 ; #IP Wissanggeni
+    	server 10.36.1.3:8001 ; #IP Prabukusuma
+    	server 10.36.1.4:8002 ; #IP Abimanyu
+    	server 10.36.1.2:8003 ; #IP Wissanggeni
 }
 
  server {
@@ -464,3 +464,36 @@ mengecek apakah konfigurasi yang dibuat sudah benar atau belum, bisa mengunakan 
 nginx -t
 ````
 ![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/90956f4b-df7e-4e51-8437-018aa82cf6b5)
+
+Selanjutnya kita akan restart nginx dan setup 3 Server dibawahnya yaitu Prabukusuma, Abimanyu, dan Wissanggeni sebelum itu kita install dulu tool seperti php dan php-fpm untuk menjalankan php dengan cara :
+````
+apt-get install php php-fpm -y
+service php7.0-fpm start
+````
+
+memasukkan di file PrabuKusuma, Abimanyu, Wisanggeni
+
+X adalah port yang telah ditentukan sesuai worker masing-masing
+````
+echo 'server {
+        listen 800X;
+
+        root /var/www/jarkom;
+        index index.php index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+        }
+
+        location ~ /\.ht {
+                deny all;
+        }
+}' > /etc/nginx/sites-available/
+````
