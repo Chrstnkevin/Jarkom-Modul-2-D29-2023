@@ -295,7 +295,7 @@ lalu masukkan perintah ini di client
 ````
 host -t PTR 10.36.1.4
 ````
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/3556143f-00ef-4216-9559-e4a6239e6faf)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/0913fdb1-42ff-47f3-a89b-4dcd6eb48d27)
 
 ## Soal No 6
 Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
@@ -304,10 +304,11 @@ nano /etc/bind/named.conf.local
 ````
 tambahkan pada zone arjuna dan abimanyu
 ````
-    	also-notify { 10.36.2.3; } // IP Werkudara
+	notify yes;
+	also-notify { 10.36.2.3; } // IP Werkudara
     	allow-transfer { 10.36.2.3; } // IP Werkudara
 ````
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/bf587cd1-1e55-46c5-b761-b0e9310a419d)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/3bfa5ab3-a998-4807-a000-59ad0da88888)
 
 lalu setting pada **werkudara** pada file /etc/bind/named.conf.local menjadi 
 ````
@@ -328,15 +329,15 @@ setelah itu untuk mencoba maka stop bind9
 ````
 service bind9 stop
 ````
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/64a9af5b-7b69-47fb-93cf-06f3ef126310)
-dan coba ping di ip client dan didapatkan
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/19255f51-ce44-4300-9d2d-c3cf5de8f584)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/6e549651-f39d-43ff-bc8b-e716a3b3605a)
 
+dan coba ping di ip client dan didapatkan
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/21d3e9c5-8259-4d63-8a39-9c19bc0f0754)
 
 ## Soal No 7
 Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda.
 
-Untuk membuat subdomain tersebut kita bisa pergi ke server Yudhistira  dan pergi ko directory ‘/etc/bind/abimanyu.d29/abimanyu.d29.com’ kemudian tambahkan script 
+Untuk membuat subdomain tersebut kita bisa pergi ke server **Yudhistira**  dan pergi ko directory ‘/etc/bind/abimanyu.d29/abimanyu.d29.com’ kemudian tambahkan script 
 ````
 ns1     	IN      A       10.36.2.3     ; IP Werkudara
 baratayuda  	IN  	NS  	ns1
@@ -349,7 +350,7 @@ Kemudian comment dnssec-validation auto; dan tambahkan baris berikut pada /etc/b
 ````
 allow-query{any;};
 ````
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/debc5157-7e28-4ee5-9d06-4c26adb89d35)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/4407be00-6198-4a19-b7e6-a7a43d94f998)
 
 setelah itu edit conf file di node **Werkudara** /etc/bind/named.conf.local dengan menambahkan
 ````
@@ -383,8 +384,8 @@ $TTL	604800
 @   	IN  	A   	10.36.1.4   	; IP Abimanyu
 www 	IN  	CNAME   baratayuda.abimanyu.d29.com.
 ````
-lalu kita coba ping melalui client dan berhasil
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/a970fb4f-5833-43b4-8537-a00c32fa399b)
+lalu kita coba ping baratayuda.abimanyu.d29.com melalui client dan berhasil
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/936b6f31-d5bf-4a2d-9a09-20f2651b70aa)
 
 ## Soal No 8
 Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
@@ -394,10 +395,10 @@ pada node **Werkudara** kita lakukan delegasi dengan cara
 rjp             IN      A       10.36.1.4     ; IP Abimanyu
 www.rjp         IN      CNAME   rjp.baratayuda.abimanyu.d29.com.
 ````
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/854c0bd8-72e4-4a16-91c9-d5d5ec1482b5)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/7e9baf9d-c1a8-4977-8c5f-5916dc8d69c5)
 
 dan lakukan testing melalui client di rjp.baratayuda.abimanyu.d29.com lalu didapatkan hasil
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/f99f5529-6b64-4d32-9655-138161fe086b)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/8c4cccf5-c1f7-4600-b365-f84a20ee6b94)
 
 ## Soal No 9
 Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai web server) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
