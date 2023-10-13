@@ -23,6 +23,53 @@ iface eth2 inet static
 	address 10.36.2.1
 	netmask 255.255.255.0
 ````
+## Switch 1 (10.36.1.1)
+**Wisanggeni** 
+````
+auto eth0
+iface eth0 inet static
+	address 10.36.1.2
+	netmask 255.255.255.0
+	gateway 10.36.1.1
+	up echo nameserver 192.168.122.1 > /etc/resolv.conf
+````
+**Prabukusuma** 
+````
+auto eth0
+iface eth0 inet static
+	address 10.36.1.3
+	netmask 255.255.255.0
+	gateway 10.36.1.1
+	up echo nameserver 192.168.122.1 > /etc/resolv.conf
+````
+**Abimanyu** 
+````
+auto eth0
+iface eth0 inet static
+	address 10.36.1.4
+	netmask 255.255.255.0
+	gateway 10.36.1.1
+	up echo nameserver 192.168.122.1 > /etc/resolv.conf
+````
+**Sadewa** 
+````
+auto eth0
+iface eth0 inet static
+	address 10.36.1.5
+	netmask 255.255.255.0
+	gateway 10.36.1.1
+	up echo nameserver 192.168.122.1 > /etc/resolv.conf
+````
+**Nakula** 
+````
+auto eth0
+iface eth0 inet static
+	address 10.36.1.6
+	netmask 255.255.255.0
+	gateway 10.36.1.1
+	up echo nameserver 192.168.122.1 > /etc/resolv.conf
+````
+## Switch 2 (10.36.2.1)
 
 **Yudisthira** 
 ````
@@ -33,11 +80,29 @@ iface eth0 inet static
 	gateway 10.36.2.1
 	up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ````
-
+**Werkudara** 
+````
+auto eth0
+iface eth0 inet static
+	address 10.36.2.3
+	netmask 255.255.255.0
+	gateway 10.36.2.1
+	up echo nameserver 192.168.122.1 > /etc/resolv.conf
+````
+**Arjuna** 
+````
+auto eth0
+iface eth0 inet static
+	address 10.36.2.4
+	netmask 255.255.255.0
+	gateway 10.36.2.1
+	up echo nameserver 192.168.122.1 > /etc/resolv.conf
+````
+### Ringkasan IP
 ````
 Router	    : 10.36.1.1 (Switch 1)
-Wisanggeni	: 10.36.1.2
-Prabukusuma	: 10.36.1.3
+Wisanggeni  : 10.36.1.2
+Prabukusuma : 10.36.1.3
 Abimanyu    : 10.36.1.4
 Sadewa 	    : 10.36.1.5
 Nakula 	    : 10.36.1.6
@@ -57,7 +122,17 @@ Pada node lain masukkan
 ````
 echo nameserver 192.168.122.1 > /etc/resolv.conf
 ````
-
+Setting client
+````
+echo -e '
+nameserver 10.36.2.2 # IP Yudhistira
+nameserver 10.36.2.3 # IP Werkudara
+nameserver 192.168.122.1
+' > /etc/resolv.conf
+apt-get update
+apt-get install dnsutils -y
+apt-get install lynx -y
+````
 ## Soal No 2 dan 3
 Buatlah website utama pada node arjuna dengan akses ke arjuna.yyy.com dengan alias www.arjuna.yyy.com dengan yyy merupakan kode kelompok. Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
 ##### Setting Yudhistira sebagai DNSMaster
@@ -216,4 +291,70 @@ lalu restart bind9
 ````
 service bind9 restart
 ````
+lalu masukkan perintah ini di client
+````
+host -t PTR 10.36.1.4
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/3556143f-00ef-4216-9559-e4a6239e6faf)
 
+## Soal No 6
+Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
+````
+nano /etc/bind/named.conf.local
+````
+tambahkan pada zone arjuna dan abimanyu
+````
+    	also-notify { 10.36.2.3; } // IP Werkudara
+    	allow-transfer { 10.36.2.3; } // IP Werkudara
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/bf587cd1-1e55-46c5-b761-b0e9310a419d)
+
+lalu setting pada **werkudara** pada file /etc/bind/named.conf.local menjadi 
+````
+zone "arjuna.d29.com" {
+    	type slave;
+    	masters { 10.36.2.2; }; // IP Yudhistira
+    	file "/var/lib/arjuna.d29.com";
+};
+
+zone "abimanyu.d29.com" {
+    	type slave;
+    	masters { 10.36.2.2; }; // IP Yudhistira
+    	file "/var/lib/abimanyu.d29.com";
+};
+````
+
+setelah itu untuk mencoba maka stop bind9
+````
+service bind9 stop
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/64a9af5b-7b69-47fb-93cf-06f3ef126310)
+dan coba ping di ip client dan didapatkan
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/19255f51-ce44-4300-9d2d-c3cf5de8f584)
+
+
+## Soal No 7
+Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda.
+
+Untuk membuat subdomain tersebut kita bisa pergi ke server Yudhistira  dan pergi ko directory ‘/etc/bind/abimanyu.d29/abimanyu.d29.com’ kemudian tambahkan script 
+````
+ns1     	IN      A       10.36.2.3     ; IP Werkudara
+baratayuda  	IN  	NS  	ns1
+````
+kemudian edit file /etc/bind/named.conf.options
+````
+nano /etc/bind/named.conf.options
+````
+Kemudian comment dnssec-validation auto; dan tambahkan baris berikut pada /etc/bind/named.conf.options
+````
+allow-query{any;};
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/debc5157-7e28-4ee5-9d06-4c26adb89d35)
+
+setelah itu edit conf file di node **Werkudara** /etc/bind/named.conf.local dengan menambahkan
+````
+zone "baratayuda.abimanyu.d29.com" {
+    	type master;
+    	file "/etc/bind/baratayuda/baratayuda.abimanyu.d29.com";
+};
+````
