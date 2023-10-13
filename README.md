@@ -409,4 +409,58 @@ apt-get update
 apt-get install nginx -y
 service nginx start
 ````
+Kemudian kita juga harus melakukan instalasi lynx untuk melakukan check apakah deployment sudah berhasil atau belum, dengan cara
+````
+apt-get install lynx
+````
+Kita bisa check apakah deployment sudah berhasil atau belum pada worker dengan cara tykus
+````
+lynx localhost
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/f6c8cec6-72dd-4f06-a156-069d7bd1b86f)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/2774d68b-7e6e-4301-a7b3-7ab52793a8f9)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/25f29920-0e3d-4b35-b2fa-ef7fa8d36737)
 
+berhasil terbuka berarti menandakan bahwa proses deployment web berhasil
+
+## Soal No 10
+Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh
+    - Prabakusuma:8001
+    - Abimanyu:8002
+    - Wisanggeni:8003
+
+Untuk melakukan setting nginx menggunakan algoritma Round Robin pertama kita bisa akses ke Server Arjuna kemudian masuk /etc/nginx/sites-available dan membuat sebuah file yang bernama arjuna.d29.com 
+````
+nano arjuna.d29.com
+````
+yang berisikan syntax berikut 
+````
+# Default menggunakan Round Robin
+upstream arjuna  {
+    	server 10.36.1.3:5011 ; #IP Prabukusuma
+    	server 10.36.1.4:5017 ; #IP Abimanyu
+    	server 10.36.1.2:5009 ; #IP Wissanggeni
+}
+
+ server {
+    	listen 80;
+    	server_name arjuna.d29.com;
+
+    	location / {
+            	proxy_pass http://arjuna;
+    	}
+}
+````
+lalu simpan, kemudian buat symlink
+````
+ln -s /etc/nginx/sites-available/jarkom /etc/nginx/sites-enabled
+````
+terakhir restart Nginx
+````
+service nginx restart
+````
+mengecek apakah konfigurasi yang dibuat sudah benar atau belum, bisa mengunakan perintah berikut
+````
+nginx -t
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/90956f4b-df7e-4e51-8437-018aa82cf6b5)
