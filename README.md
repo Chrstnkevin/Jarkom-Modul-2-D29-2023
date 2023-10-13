@@ -358,3 +358,54 @@ zone "baratayuda.abimanyu.d29.com" {
     	file "/etc/bind/baratayuda/baratayuda.abimanyu.d29.com";
 };
 ````
+buat folder baratayuda
+````
+mkdir /etc/bind/baratayuda
+````
+dan copy file
+````
+cp /etc/bind/db.local /etc/bind/baratayuda/baratayuda.abimanyu.d29.com
+````
+masukkan di /etc/bind/baratayuda/baratayuda.abimanyu.d29.com
+````
+;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@   	IN  	SOA 	abimanyu.d29.com. root.abimanyu.d29.com. (
+                    	2023101001  	; Serial
+                     	604800     	; Refresh
+                      	86400     	; Retry
+                    	2419200     	; Expire
+                     	604800 )   	; Negative Cache TTL
+;
+@   	IN  	NS  	baratayuda.abimanyu.d29.com.
+@   	IN  	A   	10.36.1.4   	; IP Abimanyu
+www 	IN  	CNAME   baratayuda.abimanyu.d29.com.
+````
+lalu kita coba ping melalui client dan berhasil
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/a970fb4f-5833-43b4-8537-a00c32fa399b)
+
+## Soal No 8
+Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
+
+pada node **Werkudara** kita lakukan delegasi dengan cara
+````
+rjp             IN      A       10.36.1.4     ; IP Abimanyu
+www.rjp         IN      CNAME   rjp.baratayuda.abimanyu.d29.com.
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/854c0bd8-72e4-4a16-91c9-d5d5ec1482b5)
+
+dan lakukan testing melalui client di rjp.baratayuda.abimanyu.d29.com lalu didapatkan hasil
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/f99f5529-6b64-4d32-9655-138161fe086b)
+
+## Soal No 9
+Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai web server) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
+
+lakukan instalasi nginx pada ke-3 node tersebut dengan cara : 
+````
+apt-get update
+apt-get install nginx -y
+service nginx start
+````
+
