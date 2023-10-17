@@ -560,8 +560,6 @@ lynx arjuna.d29.com.
 
 Melakukan instalasi semua komponen yang diperlukan dengan perintah berikut:
 ````
-arduino
-Copy code
 apt-get install apache2
 apt-get install wget
 apt-get install unzip
