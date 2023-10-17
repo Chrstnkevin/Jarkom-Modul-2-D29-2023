@@ -403,288 +403,151 @@ dan lakukan testing melalui client di rjp.baratayuda.abimanyu.d29.com lalu didap
 ## Soal No 9
 > Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai web server) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
 
-lakukan instalasi nginx pada ke-3 node tersebut dengan cara : 
+### Pada Node PrabukusumaWebServer, AbimanyuWebServer, WisanggeniWebServer masukkan:  
 ````
-apt-get update
-apt-get install nginx -y
-service nginx start
-````
+echo nameserver 192.168.122.1 > /etc/resolv.conf
 
 
-Untuk melakukan konfigurasi load balancing, langkah-langkah berikut perlu diperhatikan:
+apt-get update && apt install nginx php php-fpm -y
 
-Pastikan telah melakukan konfigurasi Arjuna dengan benar, termasuk konfigurasi Nginx dan menentukan aturan load balancing yang sesuai, misalnya round-robin atau algoritma lainnya.
 
-Selanjutnya, lakukan proses deployment pada masing-masing worker. Ini melibatkan mengunggah aplikasi atau layanan web yang ingin di-load balance ke setiap worker. Pastikan bahwa semua worker telah diatur dengan benar dan siap melayani lalu lintas web.
+# Buat folder jarkom
+mkdir /var/www/jarkom
 
-Setelah semua konfigurasi dan deployment selesai, Arjuna akan bertindak sebagai load balancer yang akan mendistribusikan lalu lintas web ke worker yang tersedia.
 
-Script
-Jangan lupa untuk menghindari tabrakan port dengan konfigurasi default yang ada saat menginstal Nginx, langkah yang perlu diambil adalah menghapus file konfigurasi default tersebut.
+# echo ke file /var/www/jarkom/index.php
+echo '<?php
+echo "Hello World from prabukusuma";
+?>' > /var/www/jarkom/index.php
 
-### Arjuna (Load Balancer)
 
-Membuat load balancing
-````
-cd /etc/nginx/sites-available
-````
-````
 echo '
-upstream worker {
-        server 10.23.3.2;
-        server 10.23.3.3;
-        server 10.23.3.4;
-}
+ server {
 
-server {
-    listen 80;
 
-    server_name arjuna.d03.com www.arjuna.d03.com;
+        listen 80;
 
-    location / {
-        proxy_pass http://worker;
-    }
-}' > /etc/nginx/sites-available/arjuna.d03.com
-````
-ln -s /etc/nginx/sites-available/arjuna.d03.com /etc/nginx/sites-enabled
+
+        root /var/www/jarkom;
+
+
+        index index.php index.html index.htm;
+        server_name _;
+
+
+        location / {
+                        try_files $uri $uri/ /index.php?$query_string;
+        }
+
+
+        # pass PHP scripts to FastCGI server
+        location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+        }
+
+
+ location ~ /\.ht {
+                        deny all;
+        }
+
+
+        error_log /var/log/nginx/jarkom_error.log;
+        access_log /var/log/nginx/jarkom_access.log;
+ }
+' > /etc/nginx/sites-available/jarkom
+
+
+ln -s /etc/nginx/sites-available/jarkom /etc/nginx/sites-enabled/jarkom
+
+rm /etc/nginx/sites-enabled/default
 
 service nginx restart
-Prabakusuma (Worker)
+service php7.0-fpm stop
+service php7.0-fpm start
 
+````
+### Pada node ArjunaLoadBalancer masukkan:
+````
+echo nameserver 192.168.122.1 > /etc/resolv.conf
 apt-get update
-apt-get install nginx -y
-apt-get install unzip -y
-apt-get install php php-fpm -y
-apt-get install dnsutils -y
 
-rm /etc/nginx/sites-enabled/*
-rm /etc/nginx/sites-available/*
+# Install bind9
+apt-get install bind9 nginx -y
 
-service php7.2-fpm start
-
-echo '
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>prabukusuma</title>
-</head>
-<body>
-    Im prabukusuma
-</body>
-</html>
-' > /var/www/html/index.html
-
-echo '
-server {
-    listen 80;
-    root /var/www/html/;
-    index index.html index.htm;
-    server_name _;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    error_log /var/log/nginx/prabukusuma_error.log;
-    access_log /var/log/nginx/prabukusuma_access.log;
-}
- ' > /etc/nginx/sites-available/prabukusuma.d03.com
-
- ln -s /etc/nginx/sites-available/prabukusuma.d03.com /etc/nginx/sites-enabled/
-
- service nginx restart
-Abimanyu (Worker)
-
-apt-get update
-apt-get install nginx -y
-apt-get install apache2 -y
-apt-get install php php-fpm -y
-apt-get install libapache2-mod-php7.0 -y
-apt-get install unzip -y
-apt-get install wget -y
-apt-get install dnsutils -y
-
-rm /etc/nginx/sites-enabled/*
-rm /etc/nginx/sites-available/*
-rm /etc/apache2/sites-enabled/*
-rm /etc/apache2/sites-available/*
-
-service php7.2-fpm start
-
-a2enmod rewrite
-echo '
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>abimanyu</title>
-</head>
-<body>
-    Im abimanyu
-</body>
-</html>
-' > /var/www/html/index.html
-
-echo '
-server {
-    listen 80;
-    root /var/www/html/;
-    index index.html index.htm;
-    server_name _;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    error_log /var/log/nginx/abimanyu_error.log;
-    access_log /var/log/nginx/abimanyu_access.log;
-}
- ' > /etc/nginx/sites-available/abimanyu.d03.com
-
-ln -s /etc/nginx/sites-available/abimanyu.d03.com /etc/nginx/sites-enabled
-
-service nginx restart
-Wisanggeni (Worker)
-
-apt-get update
-apt-get install nginx -y
-apt-get install unzip -y
-apt-get install php php-fpm -y
-apt-get install dnsutils -y
-
-rm /etc/nginx/sites-enabled/*
-rm /etc/nginx/sites-available/*
-
-service php7.2-fpm start
-
-echo '
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>wisanggeni</title>
-</head>
-<body>
-    Im wisanggeni
-</body>
-</html>
-' > /var/www/html/index.html
-
-echo '
-server {
-    listen 80;
-    root /var/www/html/;
-    index index.html index.htm;  # Remove index.php from here
-    server_name _;
-
-    location / {
-        try_files $uri $uri/ =404;  # Adjust the try_files directive as needed
-    }
-
-    error_log /var/log/nginx/wisanggeni_error.log;
-    access_log /var/log/nginx/wisanggeni_access.log;
-}
- ' > /etc/nginx/sites-available/wisanggeni.d03.com
-
- ln -s /etc/nginx/sites-available/wisanggeni.d03.com /etc/nginx/sites-enabled
- 
- service nginx restart
-
-
-
-
-
-
-
-Kemudian kita juga harus melakukan instalasi lynx untuk melakukan check apakah deployment sudah berhasil atau belum, dengan cara
-````
-apt-get install lynx
-````
-Kita bisa check apakah deployment sudah berhasil atau belum pada worker dengan cara tykus
-````
-lynx localhost
-````
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/f6c8cec6-72dd-4f06-a156-069d7bd1b86f)
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/2774d68b-7e6e-4301-a7b3-7ab52793a8f9)
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/25f29920-0e3d-4b35-b2fa-ef7fa8d36737)
-
-berhasil terbuka berarti menandakan bahwa proses deployment web berhasil
-
-## Soal No 10
-Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh
-    - Prabakusuma:8001
-    - Abimanyu:8002
-    - Wisanggeni:8003
-
-Untuk melakukan setting nginx menggunakan algoritma Round Robin pertama kita bisa akses ke Server Arjuna kemudian masuk /etc/nginx/sites-available dan membuat sebuah file yang bernama arjuna.d29.com 
-````
-nano arjuna.d29.com
-````
-yang berisikan syntax berikut 
-````
-# Default menggunakan Round Robin
-upstream arjuna  {
-    	server 10.36.1.3:8001 ; #IP Prabukusuma
-    	server 10.36.1.4:8002 ; #IP Abimanyu
-    	server 10.36.1.2:8003 ; #IP Wissanggeni
-}
+echo ' # Default menggunakan Round Robin
+ upstream myweb  {
+  server 10.36.1.4 #IP Abimanyu
+  server 10.36.1.5 #IP Prabukusuma
+  server 10.36.1.6 #IP Wisanggeni
+ }
 
  server {
-    	listen 80;
-    	server_name arjuna.d29.com;
+  listen 80;
+  server_name arjuna.d29.com www.arjuna.d29.com;
 
-    	location / {
-            	proxy_pass http://arjuna;
-    	}
+
+  location / {
+  proxy_pass http://myweb;
+  }
+ }' > /etc/nginx/sites-available/lb-arjuna
+
+
+ln -s /etc/nginx/sites-available/lb-arjuna /etc/nginx/sites-enabled/lb-arjuna
+
+service nginx restart
+
+````
+
+## Soal No 10
+> Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh
+> - Prabakusuma:8001
+> - Abimanyu:8002
+> - Wisanggeni:8003
+
+### Ubah konfigurasi file /etc/nginx/sites-available/jarkom pada node PrabukusumaWebServer, AbimanyuWebServer, WisanggeniWebServer
+dengan menambahkan di server port yang dituju
+````
+listen 8001; # untuk Abimanyu
+listen 8002; # untuk Prabukusuma
+listen 8003; # untuk Wisanggeni
+
+service nginx restart
+````
+/etc/nginx/sites-available/lb-arjuna
+### Ubah konfigurasi file /etc/nginx/sites-available/lb-arjuna pada node ArjunaLoadBalancer dan tambahkan
+
+````
+# Default menggunakan Round Robin
+ upstream myweb  {
+  server 10.36.1.4:8001; #IP Abimanyu
+  server 10.36.1.5:8002; #IP Prabukusuma
+  server 10.36.1.6:8003; #IP Wisanggeni
+ }
+
+ server {
+  listen 80;
+  server_name arjuna.d29.com www.arjuna.d29.com;
+
+
+  location / {
+  proxy_pass http://myweb;
+  }
 }
 ````
+
 lalu simpan, kemudian buat symlink
 ````
-ln -s /etc/nginx/sites-available/jarkom /etc/nginx/sites-enabled
+ln -s /etc/nginx/sites-available/lb-arjuna /etc/nginx/sites-enabled/lb-arjuna
 ````
 terakhir restart Nginx
 ````
 service nginx restart
 ````
-mengecek apakah konfigurasi yang dibuat sudah benar atau belum, bisa mengunakan perintah berikut
+dan coba cek pada client dengan melakukan
 ````
-nginx -t
+lynx arjuna.d29.com.
 ````
-![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/90956f4b-df7e-4e51-8437-018aa82cf6b5)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/399940de-73c6-46d7-9b63-009b8130ffb4)
 
-Selanjutnya kita akan restart nginx dan setup 3 Server dibawahnya yaitu Prabukusuma, Abimanyu, dan Wissanggeni sebelum itu kita install dulu tool seperti php dan php-fpm untuk menjalankan php dengan cara :
-````
-apt-get install php php-fpm -y
-service php7.0-fpm start
-````
 
-memasukkan di file PrabuKusuma, Abimanyu, Wisanggeni
-
-X adalah port yang telah ditentukan sesuai worker masing-masing
-````
-echo 'server {
-        listen 800X;
-
-        root /var/www/jarkom;
-        index index.php index.html index.htm index.nginx-debian.html;
-
-        server_name _;
-
-        location / {
-                try_files $uri $uri/ /index.php?$query_string;
-        }
-
-        location ~ \.php$ {
-                include snippets/fastcgi-php.conf;
-                fastcgi_pass unix:/run/php/php7.0-fpm.sock;
-        }
-
-        location ~ /\.ht {
-                deny all;
-        }
-}' > /etc/nginx/sites-available/
-````
