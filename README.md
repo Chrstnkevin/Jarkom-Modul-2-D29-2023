@@ -1,4 +1,9 @@
 # Jarkom-Modul-2-D29-2023
+| Nama           | NRP            |
+| ---------------| ---------------|
+| Christian Kevin Emor      | 5025211153      |
+| Ferza Noveri     | 5025211097      |
+
 ## Soal No 1
 Yudhistira akan digunakan sebagai DNS Master, Werkudara sebagai DNS Slave, Arjuna merupakan Load Balancer yang terdiri dari beberapa Web Server yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Buatlah topologi dengan pembagian sebagai berikut. Folder topologi dapat diakses pada drive berikut 
 Kami mendapatkan topologi 8 seperti berikut:
