@@ -134,7 +134,8 @@ apt-get install dnsutils -y
 apt-get install lynx -y
 ````
 ## Soal No 2 dan 3
-Buatlah website utama pada node arjuna dengan akses ke arjuna.yyy.com dengan alias www.arjuna.yyy.com dengan yyy merupakan kode kelompok. Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
+> Buatlah website utama pada node arjuna dengan akses ke arjuna.yyy.com dengan alias www.arjuna.yyy.com dengan yyy merupakan kode kelompok. Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
+
 ##### Setting Yudhistira sebagai DNSMaster
 Masukkan ini di Yudisthira
 ````
@@ -150,32 +151,32 @@ nano /etc/bind/named.conf.local
 ````
 zone "arjuna.d29.com" {
         type master;
-        file "/etc/bind/arjuna.d29/arjuna.d29.com";
+        file "/etc/bind/arjuna/arjuna.d29.com";
 };
 
 zone "abimanyu.d29.com" {
         type master;
-        file "/etc/bind/abimanyu.d29/abimanyu.d29.com";
+        file "/etc/bind/abimanyu/abimanyu.d29.com";
 };
 ````
 ##### Membuat website utama dengan akses arjuna.yyy.com
 Pada "Yudhistira" buat folder di dalam etc/bind
 ````
-mkdir /etc/bind/arjuna.d29
+mkdir /etc/bind/arjuna
 ````
 Copy file db.local dan ganti nama
 ````
-cp /etc/bind/db.local /etc/bind/arjuna.d29/arjuna.d29.com
+cp /etc/bind/db.local /etc/bind/arjuna/arjuna.d29.com
 ````
 
-Buka file /etc/bind/arjuna.d29/arjuna.d29.com dan tuliskan
+Buka file /etc/bind/arjuna/arjuna.d29.com dan tuliskan
 ````
 ;
 ; BIND data file for local loopback interface
 ;
 \$TTL    604800
-@       IN      SOA     d29.com. root.d29.com. (
-                        2023101001      ; Serial
+@       IN      SOA     arjuna.d29.com. root.arjuna.d29.com. (
+                        2	        ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
@@ -190,16 +191,16 @@ www     IN      CNAME   arjuna.d29.com. ; Alias
 ##### Membuat website utama dengan akses abimanyu.yyy.com
 Copy file db.local dan ganti nama
 ````
-cp /etc/bind/db.local /etc/bind/abimanyu.d29/abimanyu.d29.com
+cp /etc/bind/db.local /etc/bind/abimanyu/abimanyu.d29.com
 ````
 
-Buka file /etc/bind/abimanyu.d29/abimanyu.d29.com dan tuliskan
+Buka file /etc/bind/abimanyu/abimanyu.d29.com dan tuliskan
 ````
 ;
 ; BIND data file for local loopback interface
 ;
 \$TTL    604800
-@       IN      SOA     d29.com. root.d29.com. (
+@       IN      SOA     abimanyu.d29.com. root.abimanyu.d29.com. (
                         2023101001      ; Serial
                          604800         ; Refresh
                           86400         ; Retry
@@ -220,9 +221,9 @@ dan berikut hasilnya
 ![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/3fd1eb25-d08d-46c0-b920-4c0ca437469a)
 
 ## Soal No 4
-Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain parikesit.abimanyu.yyy.com yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
+> Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain parikesit.abimanyu.yyy.com yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
 ##### Membuat Subdomain "parikesit.abimanyu.yyy.com"
-Buka file /etc/bind/abimanyu.d29/abimanyu.d29.com pada Yudhistira
+Buka file /etc/bind/abimanyu/abimanyu.d29.com pada Yudhistira
 ````
 ;
 ; BIND data file for local loopback interface
@@ -250,7 +251,8 @@ dan coba ping untuk melihat apakah berhasil atau tidak
 ![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/bd4580c8-ef7a-42d5-a713-e434e37bbd46)
 
 ## Soal No 5
-Buat juga reverse domain untuk domain utama. (Abimanyu saja yang direverse)
+> Buat juga reverse domain untuk domain utama. (Abimanyu saja yang direverse)
+
 buka terlebih dahulu file etc/bind/named.conf.local
 ````
 nano /etc/bind/named.conf.local
@@ -260,23 +262,23 @@ masukkan didalam file tersebut
 ````
 zone "1.36.10.in-addr.arpa" { 
     type master;
-    file "/etc/bind/1.36.10.in-addr/1.36.10.in-addr.arpa";
+    file "/etc/bind/abimanyu/1.36.10.in-addr.arpa";
 };
 ````
 
 Coppy filenya
 ````
-cp /etc/bind/db.local /etc/bind/1.36.10.in-addr/1.36.10.in-addr.arpa
+cp /etc/bind/db.local /etc/bind/abimanyu/1.36.10.in-addr.arpa
 ````
 
-Buka dan edit file /etc/bind/1.36.10.in-addr/1.36.10.in-addr.arpamenjadi seperti ini
+Buka dan edit file /etc/bind/abimanyu/1.36.10.in-addr.arpamenjadi seperti ini
 ````
 ;
 ; BIND data file for local loopback interface
 ;
 \$TTL    604800
-@       IN      SOA     d29.com. root.d29.com. (
-			2023101001      ; Serial
+@       IN      SOA     abimanyu.d29.com. root.abimanyu.d29.com. (
+			2	        ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
@@ -296,11 +298,11 @@ host -t PTR 10.36.1.4
 ![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/0913fdb1-42ff-47f3-a89b-4dcd6eb48d27)
 
 ## Soal No 6
-Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
+> Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
 ````
 nano /etc/bind/named.conf.local
 ````
-tambahkan pada zone arjuna dan abimanyu
+tambahkan pada node **Yudhistira** zone arjuna dan abimanyu
 ````
 	notify yes;
 	also-notify { 10.36.2.3; } // IP Werkudara
@@ -308,7 +310,7 @@ tambahkan pada zone arjuna dan abimanyu
 ````
 ![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/3bfa5ab3-a998-4807-a000-59ad0da88888)
 
-lalu setting pada **werkudara** pada file /etc/bind/named.conf.local menjadi 
+lalu setting pada node **werkudara** pada file /etc/bind/named.conf.local menjadi 
 ````
 zone "arjuna.d29.com" {
     	type slave;
@@ -333,9 +335,9 @@ dan coba ping di ip client dan didapatkan
 ![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/21d3e9c5-8259-4d63-8a39-9c19bc0f0754)
 
 ## Soal No 7
-Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda.
+> Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda.
 
-Untuk membuat subdomain tersebut kita bisa pergi ke server **Yudhistira**  dan pergi ko directory ‘/etc/bind/abimanyu.d29/abimanyu.d29.com’ kemudian tambahkan script 
+Untuk membuat subdomain tersebut kita bisa pergi ke server **Yudhistira**  dan pergi ko directory ‘/etc/bind/abimanyu/abimanyu.d29.com’ kemudian tambahkan script 
 ````
 ns1     	IN      A       10.36.2.3     ; IP Werkudara
 baratayuda  	IN  	NS  	ns1
@@ -357,13 +359,13 @@ zone "baratayuda.abimanyu.d29.com" {
     	file "/etc/bind/baratayuda/baratayuda.abimanyu.d29.com";
 };
 ````
-buat folder baratayuda
+buat folder delegasi
 ````
-mkdir /etc/bind/baratayuda
+mkdir /etc/bind/delegasi
 ````
 dan copy file
 ````
-cp /etc/bind/db.local /etc/bind/baratayuda/baratayuda.abimanyu.d29.com
+cp /etc/bind/db.local /etc/bind/delegasi/baratayuda.abimanyu.d29.com
 ````
 masukkan di /etc/bind/baratayuda/baratayuda.abimanyu.d29.com
 ````
@@ -386,7 +388,7 @@ lalu kita coba ping baratayuda.abimanyu.d29.com melalui client dan berhasil
 ![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/936b6f31-d5bf-4a2d-9a09-20f2651b70aa)
 
 ## Soal No 8
-Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
+> Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
 
 pada node **Werkudara** kita lakukan delegasi dengan cara
 ````
@@ -399,7 +401,7 @@ dan lakukan testing melalui client di rjp.baratayuda.abimanyu.d29.com lalu didap
 ![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/8c4cccf5-c1f7-4600-b365-f84a20ee6b94)
 
 ## Soal No 9
-Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai web server) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
+> Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai web server) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
 
 lakukan instalasi nginx pada ke-3 node tersebut dengan cara : 
 ````
@@ -407,6 +409,197 @@ apt-get update
 apt-get install nginx -y
 service nginx start
 ````
+
+
+Untuk melakukan konfigurasi load balancing, langkah-langkah berikut perlu diperhatikan:
+
+Pastikan telah melakukan konfigurasi Arjuna dengan benar, termasuk konfigurasi Nginx dan menentukan aturan load balancing yang sesuai, misalnya round-robin atau algoritma lainnya.
+
+Selanjutnya, lakukan proses deployment pada masing-masing worker. Ini melibatkan mengunggah aplikasi atau layanan web yang ingin di-load balance ke setiap worker. Pastikan bahwa semua worker telah diatur dengan benar dan siap melayani lalu lintas web.
+
+Setelah semua konfigurasi dan deployment selesai, Arjuna akan bertindak sebagai load balancer yang akan mendistribusikan lalu lintas web ke worker yang tersedia.
+
+Script
+Jangan lupa untuk menghindari tabrakan port dengan konfigurasi default yang ada saat menginstal Nginx, langkah yang perlu diambil adalah menghapus file konfigurasi default tersebut.
+
+### Arjuna (Load Balancer)
+
+Membuat load balancing
+````
+cd /etc/nginx/sites-available
+````
+````
+echo '
+upstream worker {
+        server 10.23.3.2;
+        server 10.23.3.3;
+        server 10.23.3.4;
+}
+
+server {
+    listen 80;
+
+    server_name arjuna.d03.com www.arjuna.d03.com;
+
+    location / {
+        proxy_pass http://worker;
+    }
+}' > /etc/nginx/sites-available/arjuna.d03.com
+````
+ln -s /etc/nginx/sites-available/arjuna.d03.com /etc/nginx/sites-enabled
+
+service nginx restart
+Prabakusuma (Worker)
+
+apt-get update
+apt-get install nginx -y
+apt-get install unzip -y
+apt-get install php php-fpm -y
+apt-get install dnsutils -y
+
+rm /etc/nginx/sites-enabled/*
+rm /etc/nginx/sites-available/*
+
+service php7.2-fpm start
+
+echo '
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>prabukusuma</title>
+</head>
+<body>
+    Im prabukusuma
+</body>
+</html>
+' > /var/www/html/index.html
+
+echo '
+server {
+    listen 80;
+    root /var/www/html/;
+    index index.html index.htm;
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    error_log /var/log/nginx/prabukusuma_error.log;
+    access_log /var/log/nginx/prabukusuma_access.log;
+}
+ ' > /etc/nginx/sites-available/prabukusuma.d03.com
+
+ ln -s /etc/nginx/sites-available/prabukusuma.d03.com /etc/nginx/sites-enabled/
+
+ service nginx restart
+Abimanyu (Worker)
+
+apt-get update
+apt-get install nginx -y
+apt-get install apache2 -y
+apt-get install php php-fpm -y
+apt-get install libapache2-mod-php7.0 -y
+apt-get install unzip -y
+apt-get install wget -y
+apt-get install dnsutils -y
+
+rm /etc/nginx/sites-enabled/*
+rm /etc/nginx/sites-available/*
+rm /etc/apache2/sites-enabled/*
+rm /etc/apache2/sites-available/*
+
+service php7.2-fpm start
+
+a2enmod rewrite
+echo '
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>abimanyu</title>
+</head>
+<body>
+    Im abimanyu
+</body>
+</html>
+' > /var/www/html/index.html
+
+echo '
+server {
+    listen 80;
+    root /var/www/html/;
+    index index.html index.htm;
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    error_log /var/log/nginx/abimanyu_error.log;
+    access_log /var/log/nginx/abimanyu_access.log;
+}
+ ' > /etc/nginx/sites-available/abimanyu.d03.com
+
+ln -s /etc/nginx/sites-available/abimanyu.d03.com /etc/nginx/sites-enabled
+
+service nginx restart
+Wisanggeni (Worker)
+
+apt-get update
+apt-get install nginx -y
+apt-get install unzip -y
+apt-get install php php-fpm -y
+apt-get install dnsutils -y
+
+rm /etc/nginx/sites-enabled/*
+rm /etc/nginx/sites-available/*
+
+service php7.2-fpm start
+
+echo '
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wisanggeni</title>
+</head>
+<body>
+    Im wisanggeni
+</body>
+</html>
+' > /var/www/html/index.html
+
+echo '
+server {
+    listen 80;
+    root /var/www/html/;
+    index index.html index.htm;  # Remove index.php from here
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;  # Adjust the try_files directive as needed
+    }
+
+    error_log /var/log/nginx/wisanggeni_error.log;
+    access_log /var/log/nginx/wisanggeni_access.log;
+}
+ ' > /etc/nginx/sites-available/wisanggeni.d03.com
+
+ ln -s /etc/nginx/sites-available/wisanggeni.d03.com /etc/nginx/sites-enabled
+ 
+ service nginx restart
+
+
+
+
+
+
+
 Kemudian kita juga harus melakukan instalasi lynx untuk melakukan check apakah deployment sudah berhasil atau belum, dengan cara
 ````
 apt-get install lynx
