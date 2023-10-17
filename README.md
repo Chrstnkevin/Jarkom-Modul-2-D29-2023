@@ -550,4 +550,67 @@ lynx arjuna.d29.com.
 ````
 ![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/399940de-73c6-46d7-9b63-009b8130ffb4)
 
+## Soal No 11
+> Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server www.abimanyu.yyy.com. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy
+
+Melakukan instalasi semua komponen yang diperlukan dengan perintah berikut:
+````
+arduino
+Copy code
+apt-get install apache2
+apt-get install wget
+apt-get install unzip
+````
+Mengimpor file dari Google Drive untuk mengisi direktori /var/www dengan menggunakan perintah wget:
+````
+wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1a4V23hwK9S7hQEDEcv9FL14UkkrHc-Zc' -O abi
+````
+
+Menjalankan perintah unzip untuk mengekstrak isi file "abi" ke dalam direktori "abimanyu.d29" di dalam "/var/www":
+````
+unzip abi -d /var/www/abimanyu.a07
+````
+Menghapus file "abi" setelah diekstrak:
+````
+rm abi
+````
+Memindahkan semua isi direktori "abimanyu.d29/abimanyu.yyy.com" ke direktori "abimanyu.d29":
+````
+mv /var/www/abimanyu.a07/abimanyu.yyy.com/* /var/www/abimanyu.a07
+````
+Menghapus direktori "abimanyu.d29/abimanyu.yyy.com" yang sudah tidak diperlukan:
+````
+rmdir /var/www/abimanyu.a07/abimanyu.yyy.com
+````
+Membuat file konfigurasi "abimanyu.d29.conf" di dalam direktori "/etc/apache2/sites-available" dan menyalin isi dari file "000-default.conf" ke dalamnya:
+````
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/abimanyu.d29.conf
+````
+Di dalam tag "VirtualHost" pada file "abimanyu.d29.conf", mengkonfigurasi nama server, alias server, admin server, dan mengatur "DocumentRoot" ke "/var/www/abimanyu.d29" yang sudah diisi sebelumnya.
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/db6932e9-722d-4233-a6bb-5e4d66ebd22c)
+
+Hasil dari akses menggunakan 
+````
+lynx http://www.abimanyu.d29.com/index.php/home" 
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/490dddd8-5e5d-4bb3-aa1c-16a4e056f698)
+
+## Soal No 12
+> Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abimanyu.yyy.com/home.
+````
+nano /etc/apache2/sites-available/abimanyu.d29.conf
+````
+Tambahkan konfigurasi seperti berikut di directory
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/5f567ace-da50-499a-a909-ab7deca2e76a)
+
+lalu buka di client
+````
+lynx http://www.abimanyu.d29.com/home" 
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/490dddd8-5e5d-4bb3-aa1c-16a4e056f698)
+
+## Soal No 13
+> Selain itu, pada subdomain www.parikesit.abimanyu.yyy.com, DocumentRoot disimpan pada /var/www/parikesit.abimanyu.yyy
+
+
 
