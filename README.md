@@ -611,6 +611,60 @@ lynx http://www.abimanyu.d29.com/home"
 
 ## Soal No 13
 > Selain itu, pada subdomain www.parikesit.abimanyu.yyy.com, DocumentRoot disimpan pada /var/www/parikesit.abimanyu.yyy
+Mengimpor file dari Google Drive untuk mengisi direktori /var/www dengan menggunakan perintah wget:
+````
+wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1LdbYntiYVF_NVNgJis1GLCLPEGyIOreS' -O pari
+````
 
+Menjalankan perintah unzip untuk mengekstrak isi file "abi" ke dalam direktori "abimanyu.d29" di dalam "/var/www":
+````
+unzip pari -d parikesit.abimanyu.d29
+rm pari
+mv parikesit.abimanyu.d29/parikesit.abimanyu.yyy.com/* parikesit.abimanyu.d29
+rmdir parikesit.abimanyu.d29/parikesit.abimanyu.yyy.com
+````
+copy file ke parikesit
+````
+cp 000-default.conf parikesit.abimanyu.d29.conf
+````
+Di dalam tag "VirtualHost" pada file "parikesit.abimanyu.d29.conf", mengkonfigurasi nama server, alias server, admin server, dan mengatur "DocumentRoot" ke "/var/www/parikesit.abimanyu.d29" yang sudah diisi sebelumnya.
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/fff67371-beac-4f69-a1f9-07f43f6f0145)
+
+
+Hasil dari akses menggunakan 
+````
+lynx http://www.parikesit.abimanyu.d29.com/
+````
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/3087d54a-f499-4959-a381-429c77b97dbd)
+
+## Soal No 14
+> Pada subdomain tersebut folder /public hanya dapat melakukan directory listing sedangkan pada folder /secret tidak dapat diakses (403 Forbidden).
+
+````
+nano /etc/apache2/sites-available/parikesit.abimanyu.d29.conf
+````
+lalu tambahkan
+````
+<Directory /var/www/parikesit.abimanyu.d29/public
+	Options +Indexes
+</Directory>
+
+<Directory /var/www/parikesit.abimanyu.d29/secret
+	Options -Indexes
+</Directory>
+````
+didapatkan hasil
+````
+lynx parikesit.abimanyu.d29.com/public
+````
+![Screenshot (180)](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/c23128eb-83a2-4447-944d-8c2c333e4991)
+
+````
+lynx parikesit.abimanyu.d29.com/secret
+````
+![Screenshot (179)](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/1d226030-faef-4802-bba2-50403c448094)
+
+## Soal No 15 - 20
+> Tidak Berhasil Terkerja
 
 
