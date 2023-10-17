@@ -217,9 +217,7 @@ Restart
 service bind9 restart
 ````
 dan berikut hasilnya
-![image](https://github.com/Chrstnkevin/UFO-2022-Alien-Escape/assets/97864068/98414ddd-239e-473a-b571-00ce5619a75e)
-![image](https://github.com/Chrstnkevin/UFO-2022-Alien-Escape/assets/97864068/51308635-4ffd-4119-adca-340c55f5fb5c)
-![image](https://github.com/Chrstnkevin/UFO-2022-Alien-Escape/assets/97864068/bfa8809b-c6d1-4452-9d44-4207efb12bb8)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/3fd1eb25-d08d-46c0-b920-4c0ca437469a)
 
 ## Soal No 4
 Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain parikesit.abimanyu.yyy.com yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
@@ -249,7 +247,7 @@ Restart
 service bind9 restart
 ````
 dan coba ping untuk melihat apakah berhasil atau tidak
-![image](https://github.com/Chrstnkevin/UFO-2022-Alien-Escape/assets/97864068/919d972b-3918-4828-a1d6-4dcf8a503f13)
+![image](https://github.com/Chrstnkevin/Jarkom-Modul-2-D29-2023/assets/97864068/bd4580c8-ef7a-42d5-a713-e434e37bbd46)
 
 ## Soal No 5
 Buat juga reverse domain untuk domain utama. (Abimanyu saja yang direverse)
